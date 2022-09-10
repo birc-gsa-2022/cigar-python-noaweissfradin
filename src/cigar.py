@@ -83,7 +83,3 @@ def edits_to_cigar(edits: str) -> str:
         cigar += str(len(C)) + C[0]
     return cigar
 
-
-
-if __name__ == '__main__':
-    print(cigar_to_edits("1M1D1I1M1I1D"))
