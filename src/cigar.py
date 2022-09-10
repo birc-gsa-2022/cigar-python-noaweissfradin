@@ -39,8 +39,9 @@ def cigar_to_edits(cigar: str) -> str:
     """
     results = split_pairs(cigar)
     edit = ''
-    for C in cigar:
-        edit += C[1]*C[0]
+    if(cigar!=''):
+        for C in results:
+            edit += C[1]*C[0]
     return edit
 
 
@@ -79,5 +80,10 @@ def edits_to_cigar(edits: str) -> str:
     result = split_blocks(edits)
     cigar = ''
     for C in result :
-        cigar += len(C) + C[0]
+        cigar += str(len(C)) + C[0]
     return cigar
+
+
+
+if __name__ == '__main__':
+    print(cigar_to_edits("1M1D1I1M1I1D"))

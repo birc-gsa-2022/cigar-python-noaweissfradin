@@ -19,20 +19,24 @@ def get_edits(p: str, q: str) -> tuple[str, str, str]:
 
     """
     assert len(p) == len(q)
-    pp = p
-    qq = q
     M = ''
-    for i in range (len(p)):
+    i = 0
+    j = 0
+    while (i<len(p)) and (j<len(q)) :
         if(p[i]== '-'):
-            pp = pp[:i] + pp[i+1:]
+            p = p[:i] + p[i+1:]
+            j += 1
             M += 'I'
-        elif(q[i]== '-'):
-            qq = qq[:i] + qq[i+1:]
+        elif(q[j]== '-'):
+            q = q[:j] + q[j+1:]
+            i += 1
             M += 'D'
         else:
-            M += 'M'  
+            i += 1
+            j += 1
+            M += 'M' 
 
-    return pp, qq, M
+    return p, q, M
 
 
 def local_align(p: str, x: str, i: int, edits: str) -> tuple[str, str]:
@@ -70,16 +74,14 @@ def align(p: str, q: str, edits: str) -> tuple[str, str]:
     ('ACCACAGT-CATA', 'A-CAGAGTACAAA')
 
     """
-    pp = p
-    qq = q
 
     for i in range (len(edits)):
         if(edits[i]== 'I'):
-            pp = pp[:i] + '-' + pp[i:]
+            p = p[:i] + '-' + p[i:]
         elif(edits[i]== 'D'):
-            qq = qq[:i] + '-' + qq[i:]
+            q = q[:i] + '-' + q[i:]
 
-    return pp, qq
+    return p, q
 
 
 def edit_dist(p: str, x: str, i: int, edits: str) -> int:
@@ -102,7 +104,8 @@ def edit_dist(p: str, x: str, i: int, edits: str) -> int:
     pp = local[0]
     qq = local[1]
     score = 0
-    for i in len(pp):
+    for i in range (len(pp)):
         if (pp[i]!=qq[i]):
             score +=1
     return score
+
