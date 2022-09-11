@@ -1,6 +1,9 @@
 """A module for translating between alignments and edits sequences."""
 
 
+from re import M
+
+
 def get_edits(p: str, q: str) -> tuple[str, str, str]:
     """Extract the edit operations from a pairwise alignment.
 
@@ -16,8 +19,24 @@ def get_edits(p: str, q: str) -> tuple[str, str, str]:
 
     """
     assert len(p) == len(q)
-    # FIXME: do the actual calculations here
-    return '', '', ''
+    M = ''
+    i = 0
+    j = 0
+    while (i<len(p)) and (j<len(q)) :
+        if(p[i]== '-'):
+            p = p[:i] + p[i+1:]
+            j += 1
+            M += 'I'
+        elif(q[j]== '-'):
+            q = q[:j] + q[j+1:]
+            i += 1
+            M += 'D'
+        else:
+            i += 1
+            j += 1
+            M += 'M' 
+
+    return p, q, M
 
 
 def local_align(p: str, x: str, i: int, edits: str) -> tuple[str, str]:
@@ -36,8 +55,8 @@ def local_align(p: str, x: str, i: int, edits: str) -> tuple[str, str]:
     ('ACCACAGT-CATA', 'A-CAGAGTACAAA')
 
     """
-    # FIXME: Compute the alignment rows
-    return '', ''
+    
+    return align(p,x[i:],edits)
 
 
 def align(p: str, q: str, edits: str) -> tuple[str, str]:
@@ -55,8 +74,14 @@ def align(p: str, q: str, edits: str) -> tuple[str, str]:
     ('ACCACAGT-CATA', 'A-CAGAGTACAAA')
 
     """
-    # FIXME: Compute the alignment rows
-    return '', ''
+
+    for i in range (len(edits)):
+        if(edits[i]== 'I'):
+            p = p[:i] + '-' + p[i:]
+        elif(edits[i]== 'D'):
+            q = q[:i] + '-' + q[i:]
+
+    return p, q
 
 
 def edit_dist(p: str, x: str, i: int, edits: str) -> int:
@@ -75,5 +100,12 @@ def edit_dist(p: str, x: str, i: int, edits: str) -> int:
     >>> edit_dist("accaaagta", "cgacaaatgtcca", 2, "MDMMIMMMMIIM")
     5
     """
-    # FIXME: Compute the edit distance
-    return -1
+    local = local_align(p, x, i, edits)
+    pp = local[0]
+    qq = local[1]
+    score = 0
+    for i in range (len(pp)):
+        if (pp[i]!=qq[i]):
+            score +=1
+    return score
+
